@@ -1,0 +1,1 @@
+"""POSIX Token Recognition Lexer (IEEE 1003.1-2017 Section 2.3)"""

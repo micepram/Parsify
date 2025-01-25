@@ -16,4 +16,20 @@ class POSIXLexer:
         return self.input[self.pos] if self.pos < self.length else None
 
     def tokenize(self) -> list[dict]:
-        return []
+        self.tokens = []
+        while self.pos < self.length:
+            char = self._current_char()
+            
+            if char.isspace():
+                self._advance()
+            elif char.isalnum() or char == '_':
+                collected = ""
+                while char is not None and (char.isalnum() or char == '_'):
+                    collected += char
+                    self._advance()
+                    char = self._current_char()
+                self.tokens.append({'type': 'word', 'value': collected})
+            else:
+                self._advance()
+                
+        return self.tokens

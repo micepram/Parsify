@@ -20,7 +20,7 @@ class POSIXLexer:
         while self.pos < self.length:
             char = self._current_char()
             
-            if char.isspace():
+            if char in ' \t':
                 self._advance()
             elif char.isalnum() or char == '_':
                 collected = ""

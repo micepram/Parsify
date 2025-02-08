@@ -20,7 +20,10 @@ class POSIXLexer:
         while self.pos < self.length:
             char = self._current_char()
             
-            if char in ' \t':
+            if char == '\n':
+                self.tokens.append({'type': 'newline', 'value': '\n'})
+                self._advance()
+            elif char in ' \t':
                 self._advance()
             elif char.isalnum() or char == '_':
                 collected = ""

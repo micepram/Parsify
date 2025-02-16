@@ -15,13 +15,12 @@ class POSIXLexer:
     def _current_char(self):
         return self.input[self.pos] if self.pos < self.length else None
 
-    def tokenize(self) -> list[dict]:
-        self.tokens = []
+    def tokenize(self):
         while self.pos < self.length:
             char = self._current_char()
             
             if char == '\n':
-                self.tokens.append({'type': 'newline', 'value': '\n'})
+                yield {'type': 'newline', 'value': '\n'}
                 self._advance()
             elif char in ' \t':
                 self._advance()
@@ -31,8 +30,9 @@ class POSIXLexer:
                     collected += char
                     self._advance()
                     char = self._current_char()
-                self.tokens.append({'type': 'word', 'value': collected})
+                yield {'type': 'word', 'value': collected}
             else:
                 self._advance()
-                
-        return self.tokens
+
+    def get_all_tokens(self) -> list[dict]:
+        return list(self.tokenize())

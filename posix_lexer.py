@@ -37,6 +37,19 @@ class POSIXLexer:
                     collected += char
                     self._advance()
                 yield {'type': 'word', 'value': collected}
+            elif char == '"':
+                self._advance()
+                collected = ""
+                while True:
+                    char = self._current_char()
+                    if char is None:
+                        break
+                    if char == '"':
+                        self._advance()
+                        break
+                    collected += char
+                    self._advance()
+                yield {'type': 'word', 'value': collected}
             elif char.isalnum() or char == '_':
                 collected = ""
                 while char is not None and (char.isalnum() or char == '_'):

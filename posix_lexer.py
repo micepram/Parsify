@@ -29,10 +29,8 @@ class POSIXLexer:
                 collected = ""
                 while True:
                     char = self._current_char()
-                    if char is None:
-                        break
-                    if char == "'":
-                        self._advance()
+                    if char is None or char == "'":
+                        if char == "'": self._advance()
                         break
                     collected += char
                     self._advance()
@@ -42,19 +40,31 @@ class POSIXLexer:
                 collected = ""
                 while True:
                     char = self._current_char()
-                    if char is None:
+                    if char is None or char == '"':
+                        if char == '"': self._advance()
                         break
-                    if char == '"':
+                    if char == '\\':
                         self._advance()
-                        break
+                        char = self._current_char()
+                        if char is not None:
+                            collected += char
+                            self._advance()
+                        continue
                     collected += char
                     self._advance()
                 yield {'type': 'word', 'value': collected}
-            elif char.isalnum() or char == '_':
+            elif char.isalnum() or char == '_' or char == '\\':
                 collected = ""
-                while char is not None and (char.isalnum() or char == '_'):
-                    collected += char
-                    self._advance()
+                while char is not None and (char.isalnum() or char == '_' or char == '\\'):
+                    if char == '\\':
+                        self._advance()
+                        char = self._current_char()
+                        if char is not None:
+                            collected += char
+                            self._advance()
+                    else:
+                        collected += char
+                        self._advance()
                     char = self._current_char()
                 yield {'type': 'word', 'value': collected}
             else:

@@ -40,13 +40,16 @@ class POSIXLexer:
                 collected = ""
                 while True:
                     char = self._current_char()
-                    if char is None or char == '"':
-                        if char == '"': self._advance()
+                    if char is None:
+                        break
+                    if char == '"':
+                        self._advance()
                         break
                     if char == '\\':
                         self._advance()
                         char = self._current_char()
                         if char is not None:
+                            # Escaped character inside double quotes (e.g., \" becomes ")
                             collected += char
                             self._advance()
                         continue

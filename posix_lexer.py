@@ -22,56 +22,58 @@ class POSIXLexer:
             if char == '\n':
                 yield {'type': 'newline', 'value': '\n'}
                 self._advance()
-            elif char in ' \t':
+                continue
+            
+            if char in ' \t':
                 self._advance()
-            elif char == "'":
-                self._advance()
-                collected = ""
-                while True:
-                    char = self._current_char()
-                    if char is None or char == "'":
-                        if char == "'": self._advance()
-                        break
-                    collected += char
-                    self._advance()
-                yield {'type': 'word', 'value': collected}
-            elif char == '"':
-                self._advance()
-                collected = ""
-                while True:
-                    char = self._current_char()
-                    if char is None:
-                        break
+                continue
+            
+            collected = ""
+            quote_state = None
+            
+            while self.pos < self.length:
+                char = self._current_char()
+                
+                if quote_state == "'":
+                    if char == "'":
+                        quote_state = None
+                        self._advance()
+                    else:
+                        collected += char
+                        self._advance()
+                elif quote_state == '"':
                     if char == '"':
+                        quote_state = None
                         self._advance()
-                        break
-                    if char == '\\':
+                    elif char == '\\':
                         self._advance()
-                        char = self._current_char()
-                        if char is not None:
-                            # Escaped character inside double quotes (e.g., \" becomes ")
-                            collected += char
-                            self._advance()
-                        continue
-                    collected += char
-                    self._advance()
-                yield {'type': 'word', 'value': collected}
-            elif char.isalnum() or char == '_' or char == '\\':
-                collected = ""
-                while char is not None and (char.isalnum() or char == '_' or char == '\\'):
-                    if char == '\\':
-                        self._advance()
-                        char = self._current_char()
-                        if char is not None:
-                            collected += char
+                        peek = self._current_char()
+                        if peek is not None:
+                            collected += peek
                             self._advance()
                     else:
                         collected += char
                         self._advance()
-                    char = self._current_char()
-                yield {'type': 'word', 'value': collected}
-            else:
-                self._advance()
+                else:
+                    if char in ' \t\n':
+                        break
+                    elif char == '\\':
+                        self._advance()
+                        peek = self._current_char()
+                        if peek is not None:
+                            collected += peek
+                            self._advance()
+                    elif char == "'":
+                        quote_state = "'"
+                        self._advance()
+                    elif char == '"':
+                        quote_state = '"'
+                        self._advance()
+                    else:
+                        collected += char
+                        self._advance()
+            
+            yield {'type': 'word', 'value': collected}
 
     def get_all_tokens(self) -> list[dict]:
         return list(self.tokenize())

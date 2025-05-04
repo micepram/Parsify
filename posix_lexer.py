@@ -27,6 +27,11 @@ class POSIXLexer:
             if char in ' \t':
                 self._advance()
                 continue
+
+            if char in '<>|&;()':
+                yield {'type': 'operator', 'value': char}
+                self._advance()
+                continue
             
             collected = ""
             quote_state = None
@@ -56,6 +61,8 @@ class POSIXLexer:
                         self._advance()
                 else:
                     if char in ' \t\n':
+                        break
+                    elif char in '<>|&;()':
                         break
                     elif char == '\\':
                         self._advance()

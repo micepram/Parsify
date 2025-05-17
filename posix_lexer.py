@@ -29,6 +29,14 @@ class POSIXLexer:
                 continue
 
             if char in '<>|&;()':
+                if self.pos + 1 < self.length:
+                    next_char = self.input[self.pos + 1]
+                    pair = char + next_char
+                    if pair in ('<<', '>>', '&&', '||', ';;', '<>', '>|', '<&', '>&'):
+                        yield {'type': 'operator', 'value': pair}
+                        self._advance(2)
+                        continue
+
                 yield {'type': 'operator', 'value': char}
                 self._advance()
                 continue

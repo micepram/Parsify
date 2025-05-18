@@ -85,6 +85,7 @@ class POSIXLexer:
                         quote_state = '"'
                         self._advance()
                     else:
+                        # Handles $, [, etc. as normal word char
                         collected += char
                         self._advance()
             

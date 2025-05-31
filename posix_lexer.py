@@ -1,6 +1,8 @@
 """POSIX Token Recognition Lexer (IEEE 1003.1-2017 Section 2.3)"""
 
 class POSIXLexer:
+    KEYWORDS = {'if', 'then', 'else', 'fi', 'for', 'while', 'do', 'done', 'case', 'esac'}
+
     def __init__(self, input_str: str):
         self.input = input_str
         self.length = len(input_str)
@@ -85,11 +87,11 @@ class POSIXLexer:
                         quote_state = '"'
                         self._advance()
                     else:
-                        # Handles $, [, etc. as normal word char
                         collected += char
                         self._advance()
             
-            yield {'type': 'word', 'value': collected}
+            token_type = 'keyword' if collected in self.KEYWORDS else 'word'
+            yield {'type': token_type, 'value': collected}
 
     def get_all_tokens(self) -> list[dict]:
         return list(self.tokenize())

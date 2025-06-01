@@ -30,6 +30,7 @@ class POSIXLexer:
                 self._advance()
                 continue
 
+            # Operator check only happens if we are not currently building a word (top level)
             if char in '<>|&;()':
                 if self.pos + 1 < self.length:
                     next_char = self.input[self.pos + 1]

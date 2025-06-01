@@ -37,5 +37,21 @@ class TestPOSIXLexer(unittest.TestCase):
         expected = [{'type': 'word', 'value': 'foo bar'}]
         self.assertEqual(lexer.get_all_tokens(), expected)
 
+    def test_quoted_operator(self):
+        lexer = POSIXLexer(r"'>' '&'")
+        expected = [
+            {'type': 'word', 'value': '>'},
+            {'type': 'word', 'value': '&'}
+        ]
+        self.assertEqual(lexer.get_all_tokens(), expected)
+
+    def test_escaped_operator(self):
+        lexer = POSIXLexer(r'\> \&')
+        expected = [
+            {'type': 'word', 'value': '>'},
+            {'type': 'word', 'value': '&'}
+        ]
+        self.assertEqual(lexer.get_all_tokens(), expected)
+
 if __name__ == '__main__':
     unittest.main()

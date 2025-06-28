@@ -29,6 +29,13 @@ class POSIXLexer:
             if char in ' \t':
                 self._advance()
                 continue
+            
+            if char == '#':
+                while self.pos < self.length:
+                    if self._current_char() == '\n':
+                        break
+                    self._advance()
+                continue
 
             # Operator check only happens if we are not currently building a word (top level)
             if char in '<>|&;()':

@@ -1,5 +1,8 @@
 """POSIX Token Recognition Lexer (IEEE 1003.1-2017 Section 2.3)"""
 
+class LexerError(Exception):
+    pass
+
 class POSIXLexer:
     KEYWORDS = {'if', 'then', 'else', 'fi', 'for', 'while', 'do', 'done', 'case', 'esac'}
 
@@ -34,9 +37,7 @@ class POSIXLexer:
                 self._advance()
                 continue
             
-            # 2. Quotes / Escapes (Start of word)
-            # 3. Comments
-            # 4. Words (General)
+            # 2. Quotes / Escapes / Comments / Words
             is_word_start = False
             
             if char in ('\\', "'", '"'):
@@ -98,6 +99,9 @@ class POSIXLexer:
                             collected += char
                             self._advance()
                 
+                if quote_state is not None:
+                    raise LexerError("Unclosed quote")
+
                 token_type = 'keyword' if collected in self.KEYWORDS else 'word'
                 yield {'type': token_type, 'value': collected}
                 continue

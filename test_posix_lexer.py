@@ -1,5 +1,5 @@
 import unittest
-from posix_lexer import POSIXLexer
+from posix_lexer import POSIXLexer, LexerError
 
 class TestPOSIXLexer(unittest.TestCase):
     def test_empty_input(self):
@@ -52,6 +52,11 @@ class TestPOSIXLexer(unittest.TestCase):
             {'type': 'word', 'value': '&'}
         ]
         self.assertEqual(lexer.get_all_tokens(), expected)
+
+    def test_unclosed_quote(self):
+        lexer = POSIXLexer("'open quote")
+        with self.assertRaises(LexerError):
+            lexer.get_all_tokens()
 
 if __name__ == '__main__':
     unittest.main()

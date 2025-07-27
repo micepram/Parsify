@@ -12,6 +12,9 @@ class POSIXLexer:
         self.pos = 0
         self.tokens = []
 
+    def __str__(self) -> str:
+        return f"<POSIXLexer pos={self.pos} len={self.length}>"
+
     def _advance(self, n=1):
         self.pos += n
         if self.pos > self.length:
@@ -27,8 +30,8 @@ class POSIXLexer:
             # 1. Operators
             if char in '<>|&;()':
                 if self.pos + 1 < self.length:
-                    next_char = self.input[self.pos + 1]
-                    pair = char + next_char
+                    # Optimization: Slice for potential 2-char operator
+                    pair = self.input[self.pos:self.pos+2]
                     if pair in ('<<', '>>', '&&', '||', ';;', '<>', '>|', '<&', '>&'):
                         yield {'type': 'operator', 'value': pair}
                         self._advance(2)
@@ -43,16 +46,18 @@ class POSIXLexer:
             if char in ('\\', "'", '"'):
                 is_word_start = True
             elif char == '#':
-                while self.pos < self.length:
-                    if self._current_char() == '\n':
-                        break
-                    self._advance()
+                # Optimization: Find newline to skip comment
+                newline = self.input.find('\n', self.pos)
+                if newline == -1:
+                    self.pos = self.length
+                else:
+                    self.pos = newline
                 continue
             elif char not in ' \t\n':
                 is_word_start = True
             
             if is_word_start:
-                collected = ""
+                collected_parts = []
                 quote_state = None
                 
                 while self.pos < self.length:
@@ -63,7 +68,7 @@ class POSIXLexer:
                             quote_state = None
                             self._advance()
                         else:
-                            collected += char
+                            collected_parts.append(char)
                             self._advance()
                     elif quote_state == '"':
                         if char == '"':
@@ -73,10 +78,10 @@ class POSIXLexer:
                             self._advance()
                             peek = self._current_char()
                             if peek is not None:
-                                collected += peek
+                                collected_parts.append(peek)
                                 self._advance()
                         else:
-                            collected += char
+                            collected_parts.append(char)
                             self._advance()
                     else:
                         if char in ' \t\n':
@@ -87,7 +92,7 @@ class POSIXLexer:
                             self._advance()
                             peek = self._current_char()
                             if peek is not None:
-                                collected += peek
+                                collected_parts.append(peek)
                                 self._advance()
                         elif char == "'":
                             quote_state = "'"
@@ -96,12 +101,13 @@ class POSIXLexer:
                             quote_state = '"'
                             self._advance()
                         else:
-                            collected += char
+                            collected_parts.append(char)
                             self._advance()
                 
                 if quote_state is not None:
                     raise LexerError("Unclosed quote")
 
+                collected = "".join(collected_parts)
                 token_type = 'keyword' if collected in self.KEYWORDS else 'word'
                 yield {'type': token_type, 'value': collected}
                 continue

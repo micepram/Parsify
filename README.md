@@ -6,4 +6,4 @@ Under development - run tests with python -m unittest
 
 ## Testing
 Run with: python -m unittest test_posix_lexer.py
-Added quote tests
+Comprehensive tests (19) added

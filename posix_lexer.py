@@ -121,3 +121,10 @@ class POSIXLexer:
 
     def get_all_tokens(self) -> list[dict]:
         return list(self.tokenize())
+
+def run_example(file_path: str) -> None:
+    with open(file_path, 'r') as f:
+        content = f.read()
+    lexer = POSIXLexer(content)
+    for token in lexer.tokenize():
+        print(token)

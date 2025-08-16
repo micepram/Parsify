@@ -7,3 +7,9 @@ Under development - run tests with python -m unittest
 ## Testing
 Run with: python -m unittest test_posix_lexer.py
 Comprehensive tests (19) added
+
+## Usage
+CLI supports direct string input or file paths and outputs JSON tokens.
+
+python posix_lexer.py "echo 'hello world'"
+python posix_lexer.py examples/basic.sh

@@ -1,4 +1,7 @@
 """POSIX Token Recognition Lexer (IEEE 1003.1-2017 Section 2.3)"""
+import sys
+import json
+import os
 
 class LexerError(Exception):
     pass
@@ -128,3 +131,22 @@ def run_example(file_path: str) -> None:
     lexer = POSIXLexer(content)
     for token in lexer.tokenize():
         print(token)
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Usage: python posix_lexer.py <input_string_or_file>")
+        sys.exit(1)
+    
+    arg = sys.argv[1]
+    if os.path.isfile(arg):
+        with open(arg, 'r') as f:
+            content = f.read()
+    else:
+        content = arg
+
+    try:
+        lexer = POSIXLexer(content)
+        print(json.dumps(lexer.get_all_tokens(), indent=2))
+    except LexerError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)

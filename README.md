@@ -1,5 +1,7 @@
 # Parsify
 
+[![CI](https://github.com/micepram/parsify/actions/workflows/ci.yml/badge.svg)](https://github.com/micepram/parsify/actions/workflows/ci.yml)
+
 ## Overview
 Parsify is a minimal, POSIX-compliant shell lexer written in Python 3. It is designed to implement the Token Recognition rules defined in IEEE Std 1003.1-2017 Section 2.3. It scans shell script input and breaks it down into a stream of tokens, correctly identifying words, operators, and reserved keywords while respecting quoting and escaping rules.
 

@@ -14,6 +14,10 @@ Parsify is a minimal, POSIX-compliant shell lexer written in Python 3. It is des
 *   Comments: Strips `#` comments until the end of the line.
 *   Keywords: Detects reserved words like `if`, `then`, `while`, `done`.
 
+## License
+
+MIT
+
 ## Usage
 
 The lexer can be run directly from the command line, accepting either a raw string or a file path. It outputs the list of tokens in JSON format.

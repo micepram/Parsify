@@ -3,6 +3,8 @@ import sys
 import json
 import os
 
+version = '1.0.0'
+
 class LexerError(Exception):
     pass
 

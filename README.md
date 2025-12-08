@@ -72,3 +72,8 @@ python -m unittest test_posix_lexer.py
 ## Limitations
 *   **No Expansion**: Variable expansion (`$var`) and command substitution (`$(...)`) are tokenized as words or parts of words. The lexer does not perform the actual expansion or execution.
 *   **No AST**: This is strictly a lexical scanner; it does not parse the tokens into an Abstract Syntax Tree.
+
+---
+
+*Built with ❤️ by Pramika Garg*  
+[LinkedIn](https://www.linkedin.com/in/micepram/) | [Email](mailto:micepram@gmail.com) 
